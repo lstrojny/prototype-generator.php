@@ -189,6 +189,15 @@ if ($files) {
 }
 
 $classNames = explode(',', $classNames);
+foreach ($classNames as $key => $className) {
+    if (substr($className, 0, 4) === 'ext:') {
+        $extension = new ReflectionExtension(substr($className, 4));
+        foreach ($extension->getClasses() as $class) {
+            $classNames[] = $class->getName();
+        }
+        unset($classNames[$key]);
+    }
+}
 foreach ($classNames as $className) {
     if (!class_exists($className, false) && !interface_exists($className, false)) {
         printf("Class %s not found in files %s\n", $className, $files);
